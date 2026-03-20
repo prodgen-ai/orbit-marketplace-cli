@@ -102,9 +102,9 @@ Once deployed, you can extend the framework's capabilities:
 
 * **Adding Superpowers (Custom Tools):** Open tools.py to give your agent new capabilities. You can write custom Python functions wrapped in the LangChain @tool decorator to let your agent query external APIs or interact with other business systems.
 
-* **Scaling:** Update values.yaml to increase replica counts for high-concurrency workloads.
-
-* **Event-Driven AI:** Toggle messaging.enabled: true in values.yaml to deploy the webhook microservice and automatically provision the Eventarc GCS triggers.
+* **Scaling:** The framework can be scaled dynamically to handle high-concurrency workloads. Use standard Kubernetes commands to increase your replica counts: `kubectl scale deployment orbit-agent --replicas=3 -n $NAMESPACE`
+  
+* **Event-Driven AI:** Event-driven messaging (via the webhook microservice and Eventarc triggers) is deployed and enabled by default. If you wish to disable this feature to run a lightweight version of the framework, you can scale the webhook down after deployment: `kubectl scale deployment orbit-webhook --replicas=0 -n $NAMESPACE`
 
 ## Support
 For issues during CLI deployment, please open an issue in this repository.
