@@ -10,8 +10,14 @@
 # The release name for this deployment
 name: orbit-release
 
-# The Kubernetes namespace where Orbit will be deployed
-namespace: orbit-ai
+# =========================================================================
+# MARKETPLACE TESTING FLAG (CRITICAL)
+# =========================================================================
+# Set this to 'false' for all real-world and production deployments.
+# When set to 'true', the application containers enter a sleep state and 
+# bypass all CSI volume mounts to pass Google's automated test bots.
+marketplaceTestMode: false
+
 
 # -------------------------------------------------------------------------
 # GCP Environment Configuration
@@ -24,6 +30,10 @@ region: "us-central1"
 
 # The name of your GKE Autopilot cluster
 clusterName: "orbit-cluster"
+
+# The Kubernetes namespace where Orbit will be deployed
+namespace: orbit-ai
+
 
 # -------------------------------------------------------------------------
 # Networking & Database 

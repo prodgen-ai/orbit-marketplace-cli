@@ -64,6 +64,21 @@ cp parameters.yaml.template parameters.yaml
 ```
 Edit parameters.yaml to include your specific cluster details, reporting endpoint, and network configurations.
 
+### 🚨 Critical Configuration: Marketplace Test Mode
+
+The Orbit Agentic AI Framework includes a deployment flag called `marketplaceTestMode`. This flag is used exclusively by Google Cloud's automated validation bots during the publishing process.
+
+**You MUST set `marketplaceTestMode: false` when deploying this application.**
+
+If this value is left as `true`, the application will enter a dummy testing state:
+* The Secret Manager CSI volume mounts will be bypassed.
+* The Preflight validation jobs will be skipped.
+* The Agent and Webhook containers will enter a continuous sleep loop instead of starting the Uvicorn/Streamlit servers.
+
+**How to disable it:**
+* **Via UI:** If installing via the Google Cloud Console, ensure the "Marketplace Test Mode" checkbox is **unchecked**.
+* **Via CLI:** If installing via command line, ensure your `parameters.yaml` explicitly sets `marketplaceTestMode: false`.
+
 ### 5. Deploy the Application
 Use mpdev to trigger the Marketplace deployer image. This will unpack the Orbit Helm charts and configure the agent and validator workloads on your cluster.
 
