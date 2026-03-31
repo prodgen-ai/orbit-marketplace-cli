@@ -50,6 +50,7 @@ echo "Enabling APIs..."
 gcloud services enable \
     cloudbuild.googleapis.com \
     aiplatform.googleapis.com \
+    modelarmor.googleapis.com \
     container.googleapis.com \
     artifactregistry.googleapis.com \
     sqladmin.googleapis.com \
@@ -84,6 +85,7 @@ ROLES=(
     "roles/iam.serviceAccountUser"
     "roles/aiplatform.user"
     "roles/aiplatform.serviceAgent"
+    "roles/modelarmor.admin"
     "roles/discoveryengine.editor"
     "roles/serviceusage.serviceUsageConsumer"
     "roles/secretmanager.secretAccessor"
@@ -195,12 +197,31 @@ else
     echo "✅ Forwarding Rule $PSC_ENDPOINT_NAME already exists."
 fi
 
-# 8. Enable GKE Managed Secret Manager Add-on
-echo "Enabling Managed Secret Manager add-on for GKE..."
-gcloud container clusters update $CLUSTER_NAME \
+# ==========================================
+# 8. GKE Cluster Hardening (Workload Identity & Secret Manager)
+# ==========================================
+echo "===================================================="
+echo "🛡️  Hardening GKE Cluster: $CLUSTER_NAME in $REGION"
+echo "===================================================="
+
+echo "Step 1/3: Enabling Workload Identity on the cluster..."
+gcloud container clusters update "$CLUSTER_NAME" \
+    --region="$REGION" \
+    --workload-pool="$PROJECT_ID.svc.id.goog" \
+    --project="$PROJECT_ID"
+
+echo "Step 2/3: Updating the default node pool to use GKE Metadata..."
+gcloud container node-pools update default-pool \
+    --cluster="$CLUSTER_NAME" \
+    --region="$REGION" \
+    --workload-metadata=GKE_METADATA \
+    --project="$PROJECT_ID"
+
+echo "Step 3/3: Enabling the Managed Secret Manager add-on..."
+gcloud container clusters update "$CLUSTER_NAME" \
+    --region="$REGION" \
     --enable-secret-manager \
-    --region=$REGION \
-    --project=$PROJECT_ID
+    --project="$PROJECT_ID"
 
 # 9. Final Infrastructure Hardening
 echo "Performing final infrastructure hardening..."

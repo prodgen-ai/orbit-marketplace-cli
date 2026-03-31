@@ -1,4 +1,4 @@
-# Orbit Agentic AI Framework - Command Line Deployment Guide
+# Orbit Agentic AI Framework - Deployment Guide
 
 The **Orbit Framework** is a production-grade Agentic AI Landing Zone designed for Google Cloud. It enables organizations to deploy stateful, proactive AI agents that leverage **LangGraph** for reasoning, **Vertex AI** for intelligence, and **GKE** for hyperscale.
 
@@ -6,11 +6,11 @@ This repository contains the configuration files and instructions required to de
 
 ## 📋 Prerequisites
 
-Before deploying this framework via CLI, ensure your environment meets the following requirements:
+Before deploying this framework via CLI or UI, ensure your environment meets the following requirements:
 
 ### Google Cloud Resources
 1. **Google Cloud Project:** An underlying GCP environment with an active billing account.
-2. **GKE Cluster:** A running Kubernetes cluster. This framework is fully optimized for **GKE Autopilot**, which handles Workload Identity and node scaling automatically.
+2. **GKE Cluster:** A running Kubernetes cluster. 
 3. **Cloud SQL Database:** A Postgres database instance with `pgvector` enabled and a Private Service Connect (PSC) Service Attachment.
 4. **Vertex AI Availability:** The **Vertex AI Model Garden API** must be accessible within the region where the framework is deployed.
 5. **Google Cloud Storage Bucket:** A bucket to trigger events, if messaging is enabled.
@@ -24,6 +24,8 @@ Before deploying this framework via CLI, ensure your environment meets the follo
 ---
 
 ## 🚀 Deployment Instructions
+
+Note: These intructions are true for both CLI and UI deployments as specified.
 
 ### 1. Clone this repository
 Clone this public deployment repository to your local machine to get the required template files:
@@ -86,14 +88,6 @@ Use mpdev to trigger the Marketplace deployer image. This will unpack the Orbit 
 mpdev install \
   --deployer=us-docker.pkg.dev/prodgen-orbit-public/orbit-ai/deployer:1.0 \
   --parameters_file=parameters.yaml
-```
-
-### 6. Bind Workload Identity (Required)
-Once the deployment initiates, you must link the newly created Kubernetes Service Account to your Google Cloud IAM Service Account:
-
-```bash
-kubectl annotate sa orbit-sa -n $NAMESPACE \
-  iam.gke.io/gcp-service-account=orbit-agent-identity@YOUR_PROJECT_ID.iam.gserviceaccount.com --overwrite
 ```
 
 ## 📊 Observability & Verification
